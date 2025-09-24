@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: elenavo-pm/scheduler-service
 
 jobs:
   build-and-push-images:
@@ -60,7 +59,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-prod:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-prod:latest
           platforms: linux/amd64,linux/arm64/v8
 
       - name: Add test data for testing stage
@@ -77,5 +76,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-test:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-test:latest
           platforms: linux/amd64,linux/arm64/v8
