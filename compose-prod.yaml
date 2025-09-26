@@ -21,7 +21,7 @@ services:
       - backend
 
   scheduler-service:
-    image: ghcr.io/juniors-at-work/scheduler-service-prod:latest
+    image: ghcr.io/juniors-at-work/scheduler-service-backend-prod:latest
     container_name: scheduler-service
     env_file:
       - path: ./prod.env

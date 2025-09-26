@@ -1,4 +1,0 @@
-spring:
-  docker:
-    compose:
-      file: compose-local.yaml

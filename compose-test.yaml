@@ -21,7 +21,7 @@ services:
       - backend
 
   scheduler-service:
-    image: ghcr.io/juniors-at-work/scheduler-service-test:latest
+    image: ghcr.io/juniors-at-work/scheduler-service-backend-test:latest
     container_name: scheduler-service
     env_file:
       - path: ./test.env
