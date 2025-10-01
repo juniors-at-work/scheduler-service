@@ -27,11 +27,11 @@ jobs:
           java-version: 24
           distribution: temurin
 
-      - name: Build JAR file for prod stage
+      - name: Build backend JAR for prod stage
         run: ./gradlew build
 
       - name: Remove non-executable JAR
-        run: rm build/libs/*plain.jar
+        run: rm backend/build/libs/*plain.jar
 
       - name: Set up Docker
         uses: docker/setup-docker-action@v4
@@ -54,27 +54,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image for prod stage
+      - name: Build and push backend image for prod stage
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: .
+          context: ./backend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}-prod:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-backend-prod:latest
           platforms: linux/amd64,linux/arm64/v8
 
-      - name: Add test data for testing stage
-        run: cp ./src/test/resources/db/migration/* ./src/main/resources/db/migration/
+      - name: Add test data for backend testing stage
+        run: cp ./backend/src/test/resources/db/migration/* ./backend/src/main/resources/db/migration/
 
-      - name: Build JAR file for testing stage
+      - name: Build backend JAR for testing stage
         run: ./gradlew build -x test -x integrationTest
 
       - name: Remove non-executable JAR
-        run: rm build/libs/*plain.jar
+        run: rm backend/build/libs/*plain.jar
 
-      - name: Build and push image for testing stage
+      - name: Build and push backend image for testing stage
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: .
+          context: ./backend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}-test:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-backend-test:latest
           platforms: linux/amd64,linux/arm64/v8

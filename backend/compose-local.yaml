@@ -3,9 +3,6 @@ services:
   scheduler-database:
     image: postgres:17.5
     container_name: scheduler-database
-    env_file:
-      - path: ./local.env
-        required: false
     ports:
       - "${SCHEDULER_DATABASE_EXTERNAL_PORT}:5432"
     environment:
