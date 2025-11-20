@@ -1,13 +1,10 @@
 services:
 
-  scheduler-database:
+  backend-db:
     image: postgres:17.5
-    container_name: scheduler-database
-    env_file:
-      - path: ./test.env
-        required: false
-    volumes:
-      - ./data:/var/lib/postgresql/data
+    container_name: scheduler-backend-db
+    ports:
+      - "${SCHEDULER_DATABASE_EXTERNAL_PORT}:5432"
     environment:
       - POSTGRES_DB=${SCHEDULER_DATABASE_NAME}
       - POSTGRES_USER=${SCHEDULER_DATABASE_USERNAME}
@@ -18,21 +15,18 @@ services:
       interval: 5s
       retries: 10
     networks:
-      - backend
+      - scheduler
 
-  scheduler-service:
+  backend:
     image: ghcr.io/juniors-at-work/scheduler-service-backend-test:latest
-    container_name: scheduler-service
-    env_file:
-      - path: ./test.env
-        required: false
+    container_name: scheduler-backend
     ports:
       - "${SCHEDULER_EXTERNAL_PORT}:8080"
     depends_on:
-      scheduler-database:
+      backend-db:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://scheduler-database:5432/${SCHEDULER_DATABASE_NAME}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://scheduler-backend-db:5432/${SCHEDULER_DATABASE_NAME}
       - SPRING_DATASOURCE_USERNAME=${SCHEDULER_DATABASE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SCHEDULER_DATABASE_PASSWORD}
       - SERVER_PORT=8080
@@ -48,28 +42,7 @@ services:
       retries: 5
       start_period: 20s
     networks:
-      - frontend
-      - backend
-
-  scheduler-frontend:
-    image: ghcr.io/juniors-at-work/scheduler-service-frontend-prod:latest
-    container_name: scheduler-frontend
-    ports:
-      - "80:80"
-    depends_on:
-      scheduler-service:
-        condition: service_healthy
-    environment:
-      - BACKEND_URL=http://scheduler-service:8080
-    healthcheck:
-      test: "wget -T5 -qO- http://localhost:80/actuator/health | grep UP || exit 1"
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-    networks:
-      - frontend
+      - scheduler
 
 networks:
-  frontend:
-  backend:
+  scheduler:

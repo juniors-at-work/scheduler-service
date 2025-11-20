@@ -1,0 +1,5 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: ./frontend/compose-dev.yaml

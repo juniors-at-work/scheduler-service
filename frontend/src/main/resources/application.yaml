@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: frontend
+  docker:
+    compose:
+      enabled: false
+server:
+  port: 80
+backend:
+  url: http://localhost:8080

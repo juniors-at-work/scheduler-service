@@ -1,0 +1,7 @@
+[libraries]
+wiremock = { group = "org.wiremock.integrations", name = "wiremock-spring-boot", version = "3.10.0" }
+wiremock-safe-dep = { group = "commons-io", name = "commons-io", version = "2.14.0" }
+datafaker = { group = "net.datafaker", name = "datafaker", version = "2.5.3"}
+
+[bundles]
+wiremock = ["wiremock", "wiremock-safe-dep"]

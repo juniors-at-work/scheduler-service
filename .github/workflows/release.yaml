@@ -27,10 +27,10 @@ jobs:
           java-version: 24
           distribution: temurin
 
-      - name: Build backend JAR for prod stage
+      - name: Build frontend and backend JARs for prod stage
         run: ./gradlew build
 
-      - name: Remove non-executable JAR
+      - name: Remove non-executable backend JAR
         run: rm backend/build/libs/*plain.jar
 
       - name: Set up Docker
@@ -53,6 +53,14 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push frontend image for prod stage
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-frontend-prod:latest
+          platforms: linux/amd64,linux/arm64/v8
 
       - name: Build and push backend image for prod stage
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
